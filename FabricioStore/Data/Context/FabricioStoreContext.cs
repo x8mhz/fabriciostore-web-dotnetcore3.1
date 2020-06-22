@@ -28,8 +28,8 @@ namespace FabricioStore.Data.Context
             base.OnModelCreating(modelBuilder);
         }
 
-        public DbSet<FabricioStore.ViewModels.ProductViewModel> ProductViewModel { get; set; }
-
         public DbSet<FabricioStore.ViewModels.CustomerViewModel> CustomerViewModel { get; set; }
+
+        public DbSet<FabricioStore.ViewModels.ProductViewModel> ProductViewModel { get; set; }
     }
 }

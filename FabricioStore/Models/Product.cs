@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using FabricioStore.Data.Context;
 
 namespace FabricioStore.Models
 {
@@ -27,6 +25,5 @@ namespace FabricioStore.Models
         {
             return $"{Title}";
         }
-
     }
 }

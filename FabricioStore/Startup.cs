@@ -1,6 +1,11 @@
+using System;
 using AutoMapper;
 using FabricioStore.AutoMapper;
+using FabricioStore.Controllers;
 using FabricioStore.Data.Context;
+using FabricioStore.Interfaces;
+using FabricioStore.Models;
+using FabricioStore.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,8 +27,11 @@ namespace FabricioStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<FabricioStoreContext>();
-            services.AddScoped<FabricioStoreContext, FabricioStoreContext>();
+            services.AddScoped<FabricioStoreContext>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IProductRepository ,ProductRepository>();
             services.AddAutoMapper(c => c.AddProfile<AutoMapping>(), typeof(Startup));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddControllersWithViews();
 
         }

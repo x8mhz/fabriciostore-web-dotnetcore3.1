@@ -1,31 +1,28 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using FabricioStore.Data.Context;
+﻿using AutoMapper;
+using FabricioStore.Interfaces;
 using FabricioStore.Models;
 using FabricioStore.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FabricioStore.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly FabricioStoreContext _context;
+        private readonly IProductRepository _repository;
         private readonly IMapper _mapper;
-        public ProductController(FabricioStoreContext context, IMapper mapper)
+
+        public ProductController(IMapper mapper, IProductRepository repository)
         {
-            _context = context;
             _mapper = mapper;
+            _repository = repository;
         }
         // GET: ProductController
         public async Task<IActionResult> Index()
         {
-            var model = _mapper.Map<IEnumerable<ProductViewModel>>(await _context.Products.ToListAsync());
+            var model = _mapper.Map<IEnumerable<ProductViewModel>>(await _repository.GetAll());
             return View(model);
         }
 
@@ -34,7 +31,7 @@ namespace FabricioStore.Controllers
         {
             if (id == null) return NotFound();
 
-            var model = await _context.Products.FindAsync(id);
+            var model = await _repository.GetById(id);
 
             if (model == null) return NotFound();
 
@@ -58,8 +55,7 @@ namespace FabricioStore.Controllers
 
             if (!ModelState.IsValid) return View(viewModel);
 
-            await _context.Products.AddAsync(model);
-            await _context.SaveChangesAsync();
+            await _repository.Register(model);
 
             return RedirectToAction("Index");
         }
@@ -69,7 +65,7 @@ namespace FabricioStore.Controllers
         {
             if (id == null) return NotFound();
 
-            var model = await _context.Products.FindAsync(id);
+            var model = await _repository.GetById(id);
 
             if (model == null) return NotFound();
 
@@ -86,10 +82,9 @@ namespace FabricioStore.Controllers
             var model = _mapper.Map<Product>(viewModel);
 
             if (!ModelState.IsValid) return View(viewModel);
-             _context.Update(model);
-             await _context.SaveChangesAsync();
+            await _repository.Update(model);
 
-             ViewBag.Sucesso = "Usuário atualizado!";
+            ViewBag.Sucesso = "Usuário atualizado!";
 
              return View(viewModel);
         }
@@ -99,7 +94,7 @@ namespace FabricioStore.Controllers
         {
             if (id == null) return NotFound();
 
-            var model = await _context.Products.FindAsync(id);
+            var model = await _repository.GetById(id);
 
             if (model == null) return NotFound();
 
@@ -113,9 +108,8 @@ namespace FabricioStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var model = await _context.Products.FindAsync(id);
-            await _context.Products.Remove(model).GetDatabaseValuesAsync();
-            await _context.SaveChangesAsync();
+            var model = await _repository.GetById(id);
+            await _repository.Remove(model);
 
             return RedirectToAction("Index");
         }
