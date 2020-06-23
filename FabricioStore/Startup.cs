@@ -27,7 +27,7 @@ namespace FabricioStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<FabricioStoreContext>();
-            services.AddScoped<FabricioStoreContext>();
+            services.AddScoped<FabricioStoreContext, FabricioStoreContext>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IProductRepository ,ProductRepository>();
             services.AddAutoMapper(c => c.AddProfile<AutoMapping>(), typeof(Startup));

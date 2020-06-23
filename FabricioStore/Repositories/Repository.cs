@@ -30,27 +30,29 @@ namespace FabricioStore.Repositories
             return await _db.FindAsync(id);
         }
 
-        public async Task Register(T view)
-        { 
+        public async void Register(T view)
+        {
             await _db.AddAsync(view);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
-        public async Task Update(T view)
+        public void Update(T view)
         {
-            await _db.Update(view).GetDatabaseValuesAsync();
-            await _context.SaveChangesAsync();
+            _db.Update(view);
+            _context.SaveChanges();
         }
 
-        public async Task Remove(T view)
+        public void Remove(T view)
         {
-            await _db.Remove(view).GetDatabaseValuesAsync();
-            await _context.SaveChangesAsync();
+            _db.Remove(view);
+            _context.SaveChanges();
         }
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             _context.Dispose();
+
         }
     }
 }

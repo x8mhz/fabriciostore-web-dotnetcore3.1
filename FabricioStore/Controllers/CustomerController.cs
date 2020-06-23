@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
-using FabricioStore.Data.Context;
+using FabricioStore.Interfaces;
 using FabricioStore.Models;
 using FabricioStore.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FabricioStore.Interfaces;
 
 namespace FabricioStore.Controllers
 {
@@ -56,16 +54,15 @@ namespace FabricioStore.Controllers
         // POST: CustomerController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CustomerViewModel viewModel)
+        public IActionResult Create(CustomerViewModel viewModel)
         {
-            var model = _mapper.Map<Customer>(viewModel);
-
             if (!ModelState.IsValid) return View(viewModel);
 
-            await _repository.Register(model);
+            var model =_mapper.Map<Customer>(viewModel);
+
+            _repository.Register(model);
 
             return RedirectToAction("Index");
-
         }
 
         // GET: CustomerController/Edit/5
@@ -85,15 +82,13 @@ namespace FabricioStore.Controllers
         // POST: UserController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(CustomerViewModel view)
+        public IActionResult Edit(CustomerViewModel view)
         {
-            var model = _mapper.Map<Customer>(view);
-
             if (!ModelState.IsValid) return View(view);
 
-            await _repository.Update(model);
+            var model = _mapper.Map<Customer>(view);
 
-            ViewBag.Sucesso = "Usuário atualizado!";
+            _repository.Update(model);
 
             return View(view);
         }
@@ -117,13 +112,11 @@ namespace FabricioStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var view = _repository.GetById(id);
+            var model = await _repository.GetById(id);
 
-            var model = _mapper.Map<Customer>(view);
+            _repository.Remove(model);
 
-            await _repository.Remove(model);
-
-            return RedirectToAction("Index");
+           return RedirectToAction("Index");
         }
     }
 }

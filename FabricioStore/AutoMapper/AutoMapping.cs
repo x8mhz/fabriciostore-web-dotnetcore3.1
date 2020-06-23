@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Threading.Tasks;
+using AutoMapper;
 using FabricioStore.Models;
 using FabricioStore.ViewModels;
 

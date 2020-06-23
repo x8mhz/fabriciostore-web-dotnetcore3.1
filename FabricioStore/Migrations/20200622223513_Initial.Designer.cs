@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FabricioStore.Migrations
 {
     [DbContext(typeof(FabricioStoreContext))]
-    [Migration("20200622203335_Initial")]
+    [Migration("20200622223513_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -49,13 +49,13 @@ namespace FabricioStore.Controllers
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductViewModel viewModel)
+        public IActionResult Create(ProductViewModel viewModel)
         {
             var model = _mapper.Map<Product>(viewModel);
 
             if (!ModelState.IsValid) return View(viewModel);
 
-            await _repository.Register(model);
+            _repository.Register(model);
 
             return RedirectToAction("Index");
         }
@@ -77,16 +77,17 @@ namespace FabricioStore.Controllers
         // POST: ProductController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ProductViewModel viewModel)
+        public IActionResult Edit(ProductViewModel view)
         {
-            var model = _mapper.Map<Product>(viewModel);
+            var model = _mapper.Map<Product>(view);
 
-            if (!ModelState.IsValid) return View(viewModel);
-            await _repository.Update(model);
+            if (!ModelState.IsValid) return View(model);
+
+            _repository.Update(model);
 
             ViewBag.Sucesso = "Usuário atualizado!";
 
-             return View(viewModel);
+             return View(view);
         }
 
         // GET: ProductController/Delete/5
@@ -109,7 +110,8 @@ namespace FabricioStore.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var model = await _repository.GetById(id);
-            await _repository.Remove(model);
+
+            _repository.Remove(model);
 
             return RedirectToAction("Index");
         }
